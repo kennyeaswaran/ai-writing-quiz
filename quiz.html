@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Human or AI? — Writing Quiz</title>
+  <script src="quiz-data.js"></script>
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #f7f6f2;
+      --surface:     #ffffff;
+      --border:      #e0ddd5;
+      --text:        #1a1a18;
+      --muted:       #6b6860;
+      --accent:      #2d5be3;
+      --accent-light:#e8edfc;
+      --correct:     #1a7f4b;
+      --correct-bg:  #eaf7f0;
+      --wrong:       #c0392b;
+      --wrong-bg:    #fdf0ee;
+      --highlight-human:  #d4edda;
+      --highlight-ai:     #fce8e8;
+      --radius:      10px;
+      --shadow:      0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* ── Header ── */
+    header {
+      text-align: center;
+      max-width: 700px;
+      margin-bottom: 2.5rem;
+    }
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.4rem;
+    }
+    header p {
+      color: var(--muted);
+      font-size: 1rem;
+      font-style: italic;
+    }
+
+    /* ── Progress bar ── */
+    #progress-wrap {
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: system-ui, sans-serif;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    #progress-bar-outer {
+      width: 100%;
+      max-width: 800px;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      margin-bottom: 1.8rem;
+      overflow: hidden;
+    }
+    #progress-bar-inner {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+
+    /* ── Quiz card ── */
+    #quiz-card {
+      width: 100%;
+      max-width: 800px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 2rem;
+    }
+
+    .pair-meta {
+      font-family: system-ui, sans-serif;
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .pair-meta-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .pair-meta-author {
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+    .pair-meta-source {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ── Text panels ── */
+    .panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+      margin-bottom: 1.8rem;
+    }
+    @media (max-width: 620px) {
+      .panels { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.4rem;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.25s, background 0.25s;
+    }
+    .panel-label {
+      font-family: system-ui, sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.9rem;
+    }
+    .panel-text {
+      font-size: 0.97rem;
+      line-height: 1.75;
+      flex: 1;
+      max-height: 55vh;
+      overflow-y: auto;
+      /* Subtle scrollbar styling */
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .panel-text p { margin-bottom: 0.9em; }
+    .panel-text p:last-child { margin-bottom: 0; }
+    .panel-text::-webkit-scrollbar { width: 5px; }
+    .panel-text::-webkit-scrollbar-track { background: transparent; }
+    .panel-text::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* Feedback states */
+    .panel.is-human  { border-color: var(--correct); background: var(--highlight-human); }
+    .panel.is-ai     { border-color: var(--wrong);   background: var(--highlight-ai); }
+    .panel-badge {
+      display: none;
+      margin-top: 1rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 20px;
+      font-family: system-ui, sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .panel.is-human .panel-badge {
+      display: inline-block;
+      background: var(--correct-bg);
+      color: var(--correct);
+    }
+    .panel.is-ai .panel-badge {
+      display: inline-block;
+      background: var(--wrong-bg);
+      color: var(--wrong);
+    }
+
+    /* ── Buttons ── */
+    .guess-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 1.4rem;
+    }
+
+    button {
+      cursor: pointer;
+      font-family: system-ui, sans-serif;
+      border: none;
+      border-radius: 8px;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    button:active { transform: scale(0.97); }
+    button:disabled { opacity: 0.5; cursor: default; }
+
+    .btn-guess {
+      background: var(--accent);
+      color: #fff;
+      padding: 0.7rem 1.6rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .btn-guess:hover:not(:disabled) { opacity: 0.88; }
+
+    .btn-next {
+      background: var(--text);
+      color: #fff;
+      padding: 0.7rem 2rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: none;
+      margin: 0 auto;
+    }
+    .btn-next:hover { opacity: 0.85; }
+
+    /* ── Feedback box ── */
+    #feedback-box {
+      display: none;
+      margin-top: 1.5rem;
+      padding: 1.2rem 1.4rem;
+      border-radius: var(--radius);
+      font-family: system-ui, sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      border-left: 4px solid transparent;
+    }
+    #feedback-box.correct {
+      background: var(--correct-bg);
+      border-color: var(--correct);
+    }
+    #feedback-box.wrong {
+      background: var(--wrong-bg);
+      border-color: var(--wrong);
+    }
+    #feedback-result {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    #feedback-model {
+      color: var(--muted);
+      margin-bottom: 0.8rem;
+    }
+    #feedback-explanation {
+      color: var(--text);
+    }
+
+    /* ── Score screen ── */
+    #score-screen {
+      display: none;
+      width: 100%;
+      max-width: 800px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    #score-screen h2 {
+      font-size: 1.7rem;
+      margin-bottom: 0.5rem;
+    }
+    #score-fraction {
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin: 1.2rem 0 0.4rem;
+    }
+    #score-pct {
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    /* Results breakdown */
+    #results-list {
+      text-align: left;
+      list-style: none;
+      margin: 0 auto 2rem;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+    .result-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-family: system-ui, sans-serif;
+      font-size: 0.9rem;
+      padding: 0.7rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .result-icon { font-size: 1.1rem; flex-shrink: 0; }
+    .result-topic { font-weight: 600; flex: 1; }
+    .result-detail { color: var(--muted); font-size: 0.82rem; }
+
+    .btn-restart {
+      background: var(--accent);
+      color: #fff;
+      padding: 0.8rem 2.2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+    }
+    .btn-restart:hover { opacity: 0.88; }
+
+    /* ── Error ── */
+    #error-screen {
+      display: none;
+      text-align: center;
+      font-family: system-ui, sans-serif;
+      padding: 3rem 1rem;
+      color: var(--wrong);
+    }
+    #error-screen h2 { font-size: 1.3rem; margin-bottom: 0.8rem; }
+    #error-screen p  { color: var(--muted); max-width: 500px; margin: 0 auto; line-height: 1.6; }
+    #error-screen code {
+      display: inline-block;
+      background: #f0f0f0;
+      color: #333;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      margin-top: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1 id="quiz-title">Human or AI?</h1>
+    <p id="quiz-subtitle"></p>
+  </header>
+
+  <!-- Progress -->
+  <div id="progress-wrap">
+    <span id="progress-label">Question 1 of …</span>
+    <span id="score-label">Score: 0</span>
+  </div>
+  <div id="progress-bar-outer">
+    <div id="progress-bar-inner" style="width:0%"></div>
+  </div>
+
+  <!-- Quiz card -->
+  <div id="quiz-card">
+    <div class="pair-meta">
+      <div class="pair-meta-title" id="meta-title">—</div>
+      <div class="pair-meta-author" id="meta-author">—</div>
+      <div class="pair-meta-source" id="meta-source-wrap">from <span id="meta-source"></span></div>
+    </div>
+
+    <div class="panels">
+      <div class="panel" id="panel-a">
+        <div class="panel-label">Text A</div>
+        <div class="panel-text" id="text-a"></div>
+        <div class="panel-badge" id="badge-a"></div>
+      </div>
+      <div class="panel" id="panel-b">
+        <div class="panel-label">Text B</div>
+        <div class="panel-text" id="text-b"></div>
+        <div class="panel-badge" id="badge-b"></div>
+      </div>
+    </div>
+
+    <div class="guess-buttons">
+      <button class="btn-guess" id="btn-guess-a" onclick="makeGuess('a')">
+        Text A is human
+      </button>
+      <button class="btn-guess" id="btn-guess-b" onclick="makeGuess('b')">
+        Text B is human
+      </button>
+    </div>
+
+    <div id="feedback-box">
+      <div id="feedback-result"></div>
+      <div id="feedback-model"></div>
+      <div id="feedback-explanation"></div>
+    </div>
+
+    <button class="btn-next" id="btn-next" onclick="advance()">
+      Next pair →
+    </button>
+  </div>
+
+  <!-- Score screen (hidden until end) -->
+  <div id="score-screen">
+    <h2>Quiz complete!</h2>
+    <div id="score-fraction">—</div>
+    <div id="score-pct">—</div>
+    <ul id="results-list"></ul>
+    <button class="btn-restart" onclick="restart()">Try again</button>
+  </div>
+
+  <!-- Error screen -->
+  <div id="error-screen">
+    <h2>Couldn't load quiz data</h2>
+    <p>
+      Make sure <strong>quiz-data.js</strong> is in the same folder as this file
+      and is being served over HTTP (not opened directly as a local file).<br><br>
+      Quick fix — open a terminal in the quiz folder and run:<br>
+      <code>python3 -m http.server 8080</code><br>
+      then visit <code>http://localhost:8080/quiz.html</code>
+    </p>
+  </div>
+
+  <script>
+    // ── State ──────────────────────────────────────────────
+    let pairs = [];
+    let shuffled = [];
+    let current = 0;
+    let score = 0;
+    let results = [];
+    let humanSlot = 'a'; // which slot ('a' or 'b') holds the human text
+
+    // ── Boot ───────────────────────────────────────────────
+    function init() {
+      if (typeof QUIZ_DATA === 'undefined') {
+        showError();
+        return;
+      }
+
+      document.getElementById('quiz-title').textContent    = QUIZ_DATA.title    || 'Human or AI?';
+      document.getElementById('quiz-subtitle').textContent = QUIZ_DATA.subtitle || '';
+
+      pairs    = QUIZ_DATA.pairs || [];
+      shuffled = shuffle([...pairs]);
+      current  = 0;
+      score    = 0;
+      results  = [];
+
+      document.getElementById('score-screen').style.display = 'none';
+      document.getElementById('quiz-card').style.display    = 'block';
+      document.getElementById('progress-wrap').style.display = 'flex';
+      document.getElementById('progress-bar-outer').style.display = 'block';
+
+      loadPair();
+    }
+
+    // ── Load current pair ──────────────────────────────────
+    function loadPair() {
+      const pair = shuffled[current];
+
+      // Randomly assign human/AI to slot A or B
+      humanSlot = Math.random() < 0.5 ? 'a' : 'b';
+      const aiSlot = humanSlot === 'a' ? 'b' : 'a';
+
+      // Populate panels
+      setTextWithParagraphs('text-a', humanSlot === 'a' ? pair.humanText : pair.aiText);
+      setTextWithParagraphs('text-b', humanSlot === 'b' ? pair.humanText : pair.aiText);
+
+      // Metadata
+      document.getElementById('meta-title').textContent  = pair.humanTitle  || '(untitled)';
+      document.getElementById('meta-author').textContent = pair.humanAuthor || 'unknown';
+      const sourceWrap = document.getElementById('meta-source-wrap');
+      const sourceSpan = document.getElementById('meta-source');
+      if (pair.humanSource) {
+        sourceSpan.textContent = pair.humanSource;
+        sourceWrap.style.display = 'inline';
+      } else {
+        sourceWrap.style.display = 'none';
+      }
+
+      // Reset panel appearance and scroll position
+      ['a','b'].forEach(slot => {
+        const p = document.getElementById('panel-' + slot);
+        p.classList.remove('is-human','is-ai');
+        document.getElementById('badge-' + slot).textContent = '';
+        document.getElementById('text-' + slot).scrollTop = 0;
+      });
+
+      // Reset buttons and feedback
+      document.getElementById('btn-guess-a').disabled = false;
+      document.getElementById('btn-guess-b').disabled = false;
+      document.getElementById('feedback-box').style.display  = 'none';
+      document.getElementById('btn-next').style.display      = 'none';
+
+      // Progress
+      updateProgress();
+    }
+
+    // ── Guess handler ──────────────────────────────────────
+    function makeGuess(slot) {
+      const pair     = shuffled[current];
+      const correct  = (slot === humanSlot);
+
+      if (correct) score++;
+      results.push({ pair, correct });
+
+      // Disable buttons
+      document.getElementById('btn-guess-a').disabled = true;
+      document.getElementById('btn-guess-b').disabled = true;
+
+      // Colour panels
+      const humanPanelId = 'panel-' + humanSlot;
+      const aiPanelId    = 'panel-' + (humanSlot === 'a' ? 'b' : 'a');
+
+      document.getElementById(humanPanelId).classList.add('is-human');
+      document.getElementById(aiPanelId).classList.add('is-ai');
+
+      document.getElementById('badge-' + humanSlot).textContent = '✓ Human';
+      document.getElementById('badge-' + (humanSlot === 'a' ? 'b' : 'a')).textContent =
+        'AI — ' + (pair.aiModel || 'AI model');
+
+      // Feedback
+      const fb = document.getElementById('feedback-box');
+      fb.className = correct ? 'correct' : 'wrong';
+
+      document.getElementById('feedback-result').textContent =
+        correct ? '✓ Correct!' : '✗ Not quite.';
+
+      document.getElementById('feedback-model').textContent =
+        'The AI text was generated by ' + (pair.aiModel || 'an AI model') + '.';
+
+      document.getElementById('feedback-explanation').textContent =
+        pair.explanation || '';
+
+      fb.style.display = 'block';
+
+      // Show next / finish button
+      const btnNext = document.getElementById('btn-next');
+      btnNext.textContent = (current < shuffled.length - 1) ? 'Next pair →' : 'See results';
+      btnNext.style.display = 'block';
+
+      updateProgress();
+    }
+
+    // ── Advance to next pair or show score ─────────────────
+    function advance() {
+      current++;
+      if (current >= shuffled.length) {
+        showScore();
+      } else {
+        loadPair();
+      }
+    }
+
+    // ── Score screen ───────────────────────────────────────
+    function showScore() {
+      document.getElementById('quiz-card').style.display     = 'none';
+      document.getElementById('progress-wrap').style.display = 'none';
+      document.getElementById('progress-bar-outer').style.display = 'none';
+
+      const total = shuffled.length;
+      const pct   = Math.round((score / total) * 100);
+
+      document.getElementById('score-fraction').textContent = score + ' / ' + total;
+      document.getElementById('score-pct').textContent =
+        pct + '% — ' + scoreMessage(pct);
+
+      const list = document.getElementById('results-list');
+      list.innerHTML = '';
+      results.forEach((r, i) => {
+        const li = document.createElement('li');
+        li.className = 'result-item';
+        li.innerHTML =
+          '<span class="result-icon">' + (r.correct ? '✅' : '❌') + '</span>' +
+          '<span class="result-topic">Pair ' + (i+1) + ': ' + escHtml(r.pair.humanTitle || r.pair.humanAuthor || '(untitled)') + '</span>' +
+          '<span class="result-detail">' + escHtml(r.pair.aiModel || '') + '</span>';
+        list.appendChild(li);
+      });
+
+      document.getElementById('score-screen').style.display = 'block';
+    }
+
+    function scoreMessage(pct) {
+      if (pct === 100) return 'Perfect score!';
+      if (pct >= 80)  return 'Great eye for AI tells!';
+      if (pct >= 60)  return 'Pretty good — a few slipped past.';
+      if (pct >= 40)  return 'AI is getting harder to spot.';
+      return 'Tough quiz — the AI fooled you this time.';
+    }
+
+    // ── Restart ────────────────────────────────────────────
+    function restart() {
+      init();
+    }
+
+    // ── Progress bar & label ───────────────────────────────
+    function updateProgress() {
+      const total    = shuffled.length;
+      const answered = results.length;
+      const pct      = (answered / total) * 100;
+
+      document.getElementById('progress-bar-inner').style.width = pct + '%';
+      document.getElementById('progress-label').textContent =
+        'Question ' + (current + 1) + ' of ' + total;
+      document.getElementById('score-label').textContent =
+        'Score: ' + score;
+    }
+
+    // ── Error screen ───────────────────────────────────────
+    function showError() {
+      document.getElementById('quiz-card').style.display         = 'none';
+      document.getElementById('progress-wrap').style.display     = 'none';
+      document.getElementById('progress-bar-outer').style.display = 'none';
+      document.getElementById('error-screen').style.display      = 'block';
+    }
+
+    // ── Utilities ──────────────────────────────────────────
+
+    // Splits text on blank lines and renders each chunk as a <p>,
+    // so paragraph breaks in the data file show up correctly.
+    function setTextWithParagraphs(elementId, text) {
+      const el = document.getElementById(elementId);
+      el.innerHTML = '';
+      const paragraphs = text.split(/\n\s*\n/);
+      paragraphs.forEach(para => {
+        const p = document.createElement('p');
+        p.textContent = para.trim();
+        if (p.textContent) el.appendChild(p);
+      });
+    }
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function escHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // ── Start ──────────────────────────────────────────────
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
