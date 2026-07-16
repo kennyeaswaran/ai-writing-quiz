@@ -168,6 +168,25 @@ And that’s why I’m not listening to the dark predictions of an imminent A.I.
 This limitation becomes clearest when these systems are asked to act on someone’s behalf. A human assistant who receives an urgent message from the “chief executive” demanding a secret wire transfer may notice the odd tone, the unusual request or the implausible circumstances. An L.L.M., trained to cooperate and continue patterns, may instead treat the message as a prompt to be satisfied. The very quality that makes it helpful — its willingness to produce a plausible response to almost any input — also makes it vulnerable to manipulation. A plausibility engine cannot reliably distinguish a legitimate instruction from a well-written scam.
 
 That does not make L.L.M.s worthless. It makes them tools whose usefulness depends on supervision. They may draft documents, summarize information and accelerate routine work, but the more authority they are given, the more dangerous their credulity becomes. Employers will not eagerly replace workers with systems that can be socially engineered into leaking data, sending money or following fabricated orders. The likelier future is not one in which L.L.M.s eliminate human judgment, but one in which their recurring failures remind us how economically valuable judgment has always been.`
+    },
+    {
+      id: 6,
+      difficulty: "Easy",
+      humanTitle:  "Some Thoughts about the Industry",
+      humanAuthor: "Sam Altman",
+      humanSource: "blog post",
+      aiModel: "Gemini 3.5 Flash",
+      prompt: `please write three paragraphs in the style of an AI executive, stating the AGI will be extremely powerful, that the only way to deal with this power is to share it broadly, and that democratic control will remain important`,
+      humanText: `My personal takeaway from the last several years, and take on why there has been so much Shakespearean drama between the companies in our field, comes down to this: “Once you see AGI you can’t unsee it.” It has a real "ring of power” dynamic to it, and makes people do crazy things. I don’t mean that AGI is the ring itself, but instead the totalizing philosophy of “being the one to control AGI”.
+
+The only solution I can come up with is to orient towards sharing the technology with people broadly, and for no one to have the ring. The two obvious ways to do this are individual empowerment and making sure democratic system stays in control.
+
+It is important that the democratic process remains more powerful than companies. Laws and norms are going to change, but we have to work within the democratic process, even though it will be messy and slower than we’d like. We want to be a voice and a stakeholder, but not to have all the power.`,
+      aiText: `AGI will not simply be a faster tool—it will be an unprecedented leap in collective intelligence. The sheer scale of this technology’s power cannot be overstated, holding the potential to solve our most complex global challenges and accelerate scientific progress at a pace that dwarfs the industrial revolution.
+
+Guarding such immense capability within a single corporation or nation is a recipe for deep instability. The only viable path forward is to ensure the power of AGI is shared broadly and equitably. By democratizing access, we empower global communities to build localized solutions, ensuring safety through open collaboration rather than technological hoarding.
+
+Yet, broad access requires robust oversight; democratic control must remain our ultimate safeguard. Private companies should not unilaterally dictate the moral boundaries of AGI. We must actively partner with governments and civic leaders to ensure representative, human-centric governance keeps this technology aligned with the collective interest of humanity.`
     }
   ]
 };
