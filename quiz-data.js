@@ -34,7 +34,15 @@ const QUIZ_DATA = {
       humanAuthor: "Pope Leo XIV",
       humanSource: "encyclical Magnifica Humanitas",
       aiModel: "Claude Opus 4.7",
-      prompt: "",
+      prompt: `I'm creating a quiz for my students in an AI literacy class, where they will try to tell human-written text from AI-written text. Pope Leo XIV recently published an encyclical about artificial intelligence and its relation to humanity. I would like you to write a three paragraph passage in his style to include in this quiz. (I will reveal immediately afterwards which is correct).
+
+This three-paragraph passage is about what artificial intelligence is, and how it differs from humanity.
+
+The first paragraph should note that he does not intend to give a full account of what artificial intelligence is or to summarize the existing technical or ecclesial literature, but just wants to give an overview of the elements needed for understanding the primacy of the human person.
+
+The second paragraph notes that AI is developing quickly, so that any particular statement will become outdated, and also that even the designers of these systems don't fully understand them, because they are more "cultivated" than "built", so that many important features are unknown, and thus we need more scientific research and careful moral and spiritual consideration.
+
+The third paragraph notes that we can't define AI, but should still avoid equating its "intelligence" with that of human beings, saying that they imitate human intelligence, surpass it in some ways, and offer benefits in some ways, but do not have human capacities for experience, embodiment, emotions, relationship, moral conscience. Their use of language imitates that of humanity and can simulate many of our capacities, but does not have actual understanding. Although they "learn", it is different from how a human does, as shapted by life, through choices, mistakes, forgiveness and fidelity.`,
       humanText: `97. It is not my intention here to offer a comprehensive treatment of artificial intelligence, nor to give an overview of the extensive relevant literature, since authoritative contributions already exist, including within the ecclesial context. [123] I limit myself to recalling a few essential elements for a moral and social discernment that safeguards the primacy of the human person, in order to ensure that it will always be human intelligence, with its conscience and freedom, that guides technical innovations and responsibly determines their use and limits.
 
 98. It is appropriate to preface this discussion with two considerations. First, any statement regarding AI risks becoming quickly outdated, given the remarkable pace at which these systems are developing. Second, all of us, including those who design them, possess only a limited understanding of their actual functioning. Indeed, current AI systems are more “cultivated” than “built,” for developers do not directly design every detail, but instead create a framework within which the intelligence “grows.” As a result, fundamental scientific aspects — such as the internal representations and computational processes of these systems — remain, at present, unknown. There thus emerges an urgent need for a twofold commitment: on the one hand, a deepening of scientific research; on the other, the exercise of moral and spiritual discernment.
@@ -52,7 +60,15 @@ const QUIZ_DATA = {
       humanAuthor: "Dwarkesh Patel",
       humanSource: `blog post, "Why I don't think AGI is right around the corner"`,
       aiModel: "ChatGPT 5.5 Instant",
-      prompt: "",
+      prompt: `I'm creating a quiz for my students in an AI literacy class, where they will try to tell human-written text from AI-written text. Last year, Dwarkesh Patel wrote a blog post about the inability of contemporary LLMs to learn continually from their practice. I would like you to write a four paragraph passage in his style to include in this quiz. (I will reveal immediately afterwards which is correct).
+
+The first paragraph gives the big point - LLMs don't improve from practice. Even though they start from a higher level than the average human on many skills, they don't learn and improve.
+
+The second paragraph briefly mentions that this ability to learn from experience and get better is the real reason humans are so valuable, not their intelligence.
+
+The third paragraph gives an example of teaching a child to play a saxophone. Whereas a human child tries, listens, adjusts, and tries again, the equivalent of working with an LLM is having the student try, then when they fail, sending them away, refining your instructions, and trying again.
+
+The fourth paragraph briefly observes that this just isn't going to work, but it's the only way LLMs improve.`,
       humanText: `The fundamental problem is that LLMs don’t get better over time the way a human would. The lack of continual learning is a huge huge problem. The LLM baseline at many tasks might be higher than an average human's. But there’s no way to give a model high level feedback. You’re stuck with the abilities you get out of the box. You can keep messing around with the system prompt. In practice this just doesn’t produce anything even close to the kind of learning and improvement that human employees experience.
 
 The reason humans are so useful is not mainly their raw intelligence. It’s their ability to build up context, interrogate their own failures, and pick up small improvements and efficiencies as they practice a task.
@@ -104,7 +120,15 @@ We see this shift in econometrics: as people grow wealthier, they demand more fr
       humanAuthor: "Dario Amodei (CEO of Anthropic)",
       humanSource: 'blog post, "The Adolescence of Technology"',
       aiModel: "Claude Haiku 4.5",
-      prompt: "",
+      prompt: `I'm creating a quiz for my students in an AI literacy class, where they will try to tell human-written text from AI-written text. Dario Amodei published a blog post a few months ago about some of the implications of AI. I would like you to write a four paragraph passage in his style to include in this quiz. (I will reveal immediately afterwards which is correct).
+
+The first paragraph notes that there are two major economic worries, involving labor markets and concentration of power, but this passage starts with the first. He mentions he wrote about this in 2025, warning that AI could displace half of entry level white collar jobs in the next few years even though there is continued economic growth and progress. Some economists and businesspeople agreed with him, but others said he was making the "lump of labor" fallacy and thought he was making a false claim about the present.
+
+The second paragraph notes that he will begin with the discussion of how labor markets normally respond, giving an example of a new technology, like upgraded plows in the Industrial Revolution led to greater efficiency and productivity and increased wages.
+
+The third paragraph considers the threshing machine and seed drill, which entirely replace some parts of the job. Because human work was still complementary to the machine work, productivity continued to rise, and Jevons' paradox meant that wages and even employment in agreiculture increased. Even when a large fraction of the job is automated, humans can respond by increasing output with the same amount of labor.
+
+In the fourth paragraph, he notes that eventually, as with modern combine harvestors and tractors, nearly the entire job is automated, and employment does decline. Although this causes serious disruption, since farming is just one job, people switch work. Even though farming was a large proportion of labor before the industrial revolution in the United States and Europe, and is now just 1-2% of it, people have moved to other work to advance society. Wages rise in line with GDP, and full employment is maintained after short term disruptions.`,
       humanText: `There are two specific problems I am worried about: labor market displacement, and concentration of economic power. Let’s start with the first one. This is a topic that I warned about very publicly in 2025, where I predicted that AI could displace half of all entry-level white collar jobs in the next 1–5 years, even as it accelerates economic growth and scientific progress. This warning started a public debate about the topic. Many CEOs, technologists, and economists agreed with me, but others assumed I was falling prey to a “lump of labor” fallacy and didn’t know how labor markets worked, and some didn’t see the 1–5-year time range and thought I was claiming AI is displacing jobs right now (which I agree it is likely not). So it is worth going through in detail why I am worried about labor displacement, to clear up these misunderstandings.
 
 As a baseline, it’s useful to understand how labor markets normally respond to advances in technology. When a new technology comes along, it starts by making pieces of a given human job more efficient. For example, early in the Industrial Revolution, machines, such as upgraded plows, enabled human farmers to be more efficient at some aspects of the job. This improved the productivity of farmers, which increased their wages.
