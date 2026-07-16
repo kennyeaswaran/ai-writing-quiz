@@ -12,6 +12,8 @@
  *                   (e.g. "GPT-4o", "Claude 3.5 Sonnet", "Gemini 1.5 Pro")
  *   humanText     — the original human-written passage
  *   aiText        — the AI-generated passage
+ *   prompt        — the prompt used to generate the AI text, shown to students
+ *                   after they guess (optional — leave as "" to hide)
  *   explanation   — shown to students after they guess; explain what giveaways
  *                   to look for, what the AI did well or poorly, etc.
  *
@@ -32,6 +34,7 @@ const QUIZ_DATA = {
       humanAuthor: "Pope Leo XIV",
       humanSource: "encyclical Magnifica Humanitas",
       aiModel: "Claude Opus 4.7",
+      prompt: "",
       humanText: `97. It is not my intention here to offer a comprehensive treatment of artificial intelligence, nor to give an overview of the extensive relevant literature, since authoritative contributions already exist, including within the ecclesial context. [123] I limit myself to recalling a few essential elements for a moral and social discernment that safeguards the primacy of the human person, in order to ensure that it will always be human intelligence, with its conscience and freedom, that guides technical innovations and responsibly determines their use and limits.
 
 98. It is appropriate to preface this discussion with two considerations. First, any statement regarding AI risks becoming quickly outdated, given the remarkable pace at which these systems are developing. Second, all of us, including those who design them, possess only a limited understanding of their actual functioning. Indeed, current AI systems are more “cultivated” than “built,” for developers do not directly design every detail, but instead create a framework within which the intelligence “grows.” As a result, fundamental scientific aspects — such as the internal representations and computational processes of these systems — remain, at present, unknown. There thus emerges an urgent need for a twofold commitment: on the one hand, a deepening of scientific research; on the other, the exercise of moral and spiritual discernment.
@@ -49,6 +52,7 @@ const QUIZ_DATA = {
       humanAuthor: "Dwarkesh Patel",
       humanSource: `blog post, "Why I don't think AGI is right around the corner"`,
       aiModel: "ChatGPT 5.5 Instant",
+      prompt: "",
       humanText: `The fundamental problem is that LLMs don’t get better over time the way a human would. The lack of continual learning is a huge huge problem. The LLM baseline at many tasks might be higher than an average human's. But there’s no way to give a model high level feedback. You’re stuck with the abilities you get out of the box. You can keep messing around with the system prompt. In practice this just doesn’t produce anything even close to the kind of learning and improvement that human employees experience.
 
 The reason humans are so useful is not mainly their raw intelligence. It’s their ability to build up context, interrogate their own failures, and pick up small improvements and efficiencies as they practice a task.
@@ -70,6 +74,15 @@ And this is a deeply awkward way to build intelligence. Human competence depends
       humanAuthor: "Ezra Klein",
       humanSource: "New York Times opinion column",
       aiModel: "Gemini 3.5 Flash",
+      prompt: `I'm creating a quiz for my students in an AI literacy class, where they will try to tell human-written text from AI-written text. Ezra Klein recently published an opinion piece in the New York Times about why AI probably won't lead to mass unemployment. I would like you to write a four paragraph passage in his style to include in this quiz. (I will reveal immediately afterwards which is correct).
+
+The first paragraph mentions that economists are skeptical about predictions of mass unemployment. He cites a recent essay by Alex Imas, and quotes Imas as saying that any question about future economics begins with identifying what is scarce.
+
+The second paragraph goes through the history of humanity, initially with scarcity of food, then after agriculture other goods become scarce, then after industrialization knowledge becomes scarce, but there is a fear that AI will end knowledge scarcity.
+
+The third paragraph notes that there will still be scarcity - we shouldn't ask what AI can do, but rather what we won't want AI doing.
+
+The fourth paragraph notes that in econometrics, we have discovered that rich people want more from other humans, not less. He quotes another sentence from Imas about how people shift their spending, and discusses that clothing, food, medical care, education, and physical training all shift towards more personal aspects.`,
       humanText: `Economists, I’ve found, are quite skeptical that mass joblessness is on the horizon. In “What Will Be Scarce?,” Alex Imas, an economist at the University of Chicago, tries to clarify the mistake most A.I. discourse, in his view, makes. “The answer to any question about the future economics of advanced A.I. begins with identifying what becomes scarce,” Imas writes.
 
 For most of human history, calories were scarce. Our energy went into finding or growing food. Agriculture steadily made food more plentiful and goods became scarce. Then goods were scarce; hand-me-down clothes were common and tools were expensive. Innovations in technology and manufacturing made goods cheaper. Then, technical knowledge became scarce: Doctors, lawyers and software engineers are paid high salaries because of the rarity of what they know. The fear is that A.I. will make knowledge plentiful; that it will turn the fruits of learning into a commodity as surely as manufacturing turned clothing into a commodity and industrial agriculture made strawberries commonplace.
@@ -91,6 +104,7 @@ We see this shift in econometrics: as people grow wealthier, they demand more fr
       humanAuthor: "Dario Amodei (CEO of Anthropic)",
       humanSource: 'blog post, "The Adolescence of Technology"',
       aiModel: "Claude Haiku 4.5",
+      prompt: "",
       humanText: `There are two specific problems I am worried about: labor market displacement, and concentration of economic power. Let’s start with the first one. This is a topic that I warned about very publicly in 2025, where I predicted that AI could displace half of all entry-level white collar jobs in the next 1–5 years, even as it accelerates economic growth and scientific progress. This warning started a public debate about the topic. Many CEOs, technologists, and economists agreed with me, but others assumed I was falling prey to a “lump of labor” fallacy and didn’t know how labor markets worked, and some didn’t see the 1–5-year time range and thought I was claiming AI is displacing jobs right now (which I agree it is likely not). So it is worth going through in detail why I am worried about labor displacement, to clear up these misunderstandings.
 
 As a baseline, it’s useful to understand how labor markets normally respond to advances in technology. When a new technology comes along, it starts by making pieces of a given human job more efficient. For example, early in the Industrial Revolution, machines, such as upgraded plows, enabled human farmers to be more efficient at some aspects of the job. This improved the productivity of farmers, which increased their wages.
