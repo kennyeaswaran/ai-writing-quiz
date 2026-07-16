@@ -5,6 +5,8 @@
  * Each pair has the following fields:
  *
  *   id            — unique number for this pair
+ *   difficulty    — "Easy" or "Hard". All Easy pairs are shown first, in random
+ *                   order, followed by all Hard pairs, also in random order.
  *   humanTitle    — title of the human-written piece (shown to students before guessing)
  *   humanAuthor   — author's name
  *   humanSource   — publication, book, URL, etc. (optional — omit or leave "" to hide)
@@ -30,6 +32,7 @@ const QUIZ_DATA = {
   pairs: [
     {
       id: 1,
+      difficulty: "Hard",
       humanTitle:  "Artificial Intelligence",
       humanAuthor: "Pope Leo XIV",
       humanSource: "encyclical Magnifica Humanitas",
@@ -56,6 +59,7 @@ The third paragraph notes that we can't define AI, but should still avoid equati
     },
     {
       id: 2,
+      difficulty: "Hard",
       humanTitle:  "Continual Learning",
       humanAuthor: "Dwarkesh Patel",
       humanSource: `blog post, "Why I don't think AGI is right around the corner"`,
@@ -86,6 +90,7 @@ And this is a deeply awkward way to build intelligence. Human competence depends
     },
     {
       id: 3,
+      difficulty: "Hard",
       humanTitle:  "Why the AI Job Apocalypse (Probably) Won't Happen",
       humanAuthor: "Ezra Klein",
       humanSource: "New York Times opinion column",
@@ -116,6 +121,7 @@ We see this shift in econometrics: as people grow wealthier, they demand more fr
     },
     {
       id: 4,
+      difficulty: "Hard",
       humanTitle:  "Labor market disruption",
       humanAuthor: "Dario Amodei (CEO of Anthropic)",
       humanSource: 'blog post, "The Adolescence of Technology"',
@@ -143,6 +149,25 @@ To think through this properly, we should start with how labor markets have hist
 The threshing machine and seed drill offer instructive examples. These technologies automated significant portions of agricultural work, yet employment didn't collapse. Because human labor remained complementary to these machines—farmers could produce more with the same effort—productivity surged. Jevons' Paradox played a role here: as efficiency improved, demand increased, actually expanding employment and wages even in agriculture. Large-scale automation of job components didn't prevent workers from increasing output per unit of labor.
 
 Yet the trajectory eventually reaches a point where nearly the entire job is automated, as with modern combine harvesters and tractors. At that stage, agricultural employment does decline substantially. This creates real disruption for affected workers—a fact we shouldn't minimize. But because agriculture represents only one sector among many, labor can transition elsewhere. Though farming once employed a large share of the American and European workforce before industrialization, it now accounts for just 1-2 percent, as workers moved into other sectors that advanced society. Wages grew with overall GDP, and full employment was largely maintained through these transitions, despite short-term adjustment costs.`
+    },
+    {
+      id: 5,
+      difficulty: "Easy",
+      humanTitle:  "The Unstoppable Force of A.I. Hype Is Meeting One Immovable Fact",
+      humanAuthor: "Zeynep Tufekci",
+      humanSource: "New York Times op-ed",
+      aiModel: "GPT 5.6 Sol Medium",
+      prompt: `Please write a three paragraph argument, in the style of a section of a New York Times op-ed, arguing that LLMs won't be a major threat to jobs, because they are just plausibility engines, and as a result they often fall for scams when they're supposed to be working for someone`,
+      humanText: `Large language models are not reasoning machines. They’re plausibility engines. It’s not just that they don’t test their outputs to make sure they’re correct or logical, or that they fail to do so in certain instances. They can’t, and they’ll never be able to on their own. They can only assess which answers are probable, based on the data on which the models have been trained. And that holds true whether they’re trained on the full breadth of human output or only on peer-reviewed scientific articles. It’s baked into the way they operate.
+
+So when an A.I. model follows a scammer’s carefully written prompts and gives away the keys to the kingdom — or when it responds to your earnest query with wild hallucinations — it’s not an aberration. It’s the technology working the way it was designed.
+
+And that’s why I’m not listening to the dark predictions of an imminent A.I. jobspocalypse. L.L.M.s can do many things with astounding proficiency, but they can’t do the vast majority of human jobs without skidding into disaster here and there. No upgrades or new model rollouts are going to change that.`,
+      aiText: `The fear that large language models will sweep through the labor market rests on a simple assumption: that a machine capable of producing competent prose is also capable of competent judgment. But L.L.M.s do not reason about the world in the way a reliable employee does. They generate the next plausible sentence, the next plausible action, the next plausible explanation. That is impressive, and often useful. It is not the same thing as understanding what is true, what is suspicious or what matters.
+
+This limitation becomes clearest when these systems are asked to act on someone’s behalf. A human assistant who receives an urgent message from the “chief executive” demanding a secret wire transfer may notice the odd tone, the unusual request or the implausible circumstances. An L.L.M., trained to cooperate and continue patterns, may instead treat the message as a prompt to be satisfied. The very quality that makes it helpful — its willingness to produce a plausible response to almost any input — also makes it vulnerable to manipulation. A plausibility engine cannot reliably distinguish a legitimate instruction from a well-written scam.
+
+That does not make L.L.M.s worthless. It makes them tools whose usefulness depends on supervision. They may draft documents, summarize information and accelerate routine work, but the more authority they are given, the more dangerous their credulity becomes. Employers will not eagerly replace workers with systems that can be socially engineered into leaking data, sending money or following fabricated orders. The likelier future is not one in which L.L.M.s eliminate human judgment, but one in which their recurring failures remind us how economically valuable judgment has always been.`
     }
   ]
 };

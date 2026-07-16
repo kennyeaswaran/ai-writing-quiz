@@ -313,6 +313,18 @@
       flex-direction: column;
       gap: 0.8rem;
     }
+    .result-section-header {
+      font-family: system-ui, sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.6rem;
+      padding-bottom: 0.2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .result-section-header:first-child { margin-top: 0; }
     .result-item {
       display: flex;
       align-items: center;
@@ -449,6 +461,11 @@
     let score = 0;
     let results = [];
     let humanSlot = 'a'; // which slot ('a' or 'b') holds the human text
+    let easyCount = 0; // how many Easy pairs are in `shuffled` (they come first)
+
+    function difficultyOf(pair) {
+      return pair.difficulty === 'Easy' ? 'Easy' : 'Hard';
+    }
 
     // ── Boot ───────────────────────────────────────────────
     function init() {
@@ -460,8 +477,12 @@
       document.getElementById('quiz-title').textContent    = QUIZ_DATA.title    || 'Human or AI?';
       document.getElementById('quiz-subtitle').textContent = QUIZ_DATA.subtitle || '';
 
-      pairs    = QUIZ_DATA.pairs || [];
-      shuffled = shuffle([...pairs]);
+      pairs = QUIZ_DATA.pairs || [];
+      const easyPairs = pairs.filter(p => difficultyOf(p) === 'Easy');
+      const hardPairs = pairs.filter(p => difficultyOf(p) === 'Hard');
+      easyCount = easyPairs.length;
+      // Easy pairs first (shuffled among themselves), then Hard pairs (shuffled among themselves)
+      shuffled = shuffle([...easyPairs]).concat(shuffle([...hardPairs]));
       current  = 0;
       score    = 0;
       results  = [];
@@ -595,15 +616,28 @@
 
       const list = document.getElementById('results-list');
       list.innerHTML = '';
-      results.forEach((r, i) => {
-        const li = document.createElement('li');
-        li.className = 'result-item';
-        li.innerHTML =
-          '<span class="result-icon">' + (r.correct ? '✅' : '❌') + '</span>' +
-          '<span class="result-topic">Pair ' + (i+1) + ': ' + escHtml(r.pair.humanTitle || r.pair.humanAuthor || '(untitled)') + '</span>' +
-          '<span class="result-detail">' + escHtml(r.pair.aiModel || '') + '</span>';
-        list.appendChild(li);
-      });
+
+      function appendResults(phaseLabel, phaseResults) {
+        if (!phaseResults.length) return;
+        const header = document.createElement('li');
+        header.className = 'result-section-header';
+        header.textContent = phaseLabel;
+        list.appendChild(header);
+
+        phaseResults.forEach((r, i) => {
+          const li = document.createElement('li');
+          li.className = 'result-item';
+          const modelAndAuthor = [r.pair.aiModel, r.pair.humanAuthor].filter(Boolean).join(' · ');
+          li.innerHTML =
+            '<span class="result-icon">' + (r.correct ? '✅' : '❌') + '</span>' +
+            '<span class="result-topic">Pair ' + (i+1) + ': ' + escHtml(r.pair.humanTitle || r.pair.humanAuthor || '(untitled)') + '</span>' +
+            '<span class="result-detail">' + escHtml(modelAndAuthor) + '</span>';
+          list.appendChild(li);
+        });
+      }
+
+      appendResults('Easy', results.filter(r => difficultyOf(r.pair) === 'Easy'));
+      appendResults('Hard', results.filter(r => difficultyOf(r.pair) === 'Hard'));
 
       document.getElementById('score-screen').style.display = 'block';
     }
@@ -628,8 +662,20 @@
       const pct      = (answered / total) * 100;
 
       document.getElementById('progress-bar-inner').style.width = pct + '%';
+
+      const hardCount = total - easyCount;
+      let phaseLabel, posInPhase, phaseTotal;
+      if (current < easyCount) {
+        phaseLabel = 'Easy';
+        posInPhase = current + 1;
+        phaseTotal = easyCount;
+      } else {
+        phaseLabel = 'Hard';
+        posInPhase = current - easyCount + 1;
+        phaseTotal = hardCount;
+      }
       document.getElementById('progress-label').textContent =
-        'Question ' + (current + 1) + ' of ' + total;
+        phaseLabel + ' — Question ' + posInPhase + ' of ' + phaseTotal;
       document.getElementById('score-label').textContent =
         'Score: ' + score;
     }
